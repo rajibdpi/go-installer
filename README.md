@@ -38,24 +38,22 @@ Windows (`install-go.ps1`) will:
 
 ## Run From GitHub (Raw URL)
 
-Replace `<USER>/<REPO>` with your GitHub repo (example: `rajibdpi/go-installer`).
-
 Linux/macOS (recommended, `curl`):
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/<USER>/<REPO>/main/install-go.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.sh)"
 ```
 
 Linux/macOS (`wget`):
 
 ```bash
-bash -c "$(wget -qO- https://raw.githubusercontent.com/<USER>/<REPO>/main/install-go.sh)"
+bash -c "$(wget -qO- https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.sh)"
 ```
 
 Windows (PowerShell):
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/<USER>/<REPO>/main/install-go.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.ps1 | iex"
 ```
 
 ## Install (Step-by-Step)
