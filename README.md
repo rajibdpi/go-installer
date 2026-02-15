@@ -26,7 +26,7 @@ Running the script will:
 - `curl` (required; used to detect the latest version, and as a download fallback)
 - Optional: `wget` (used for downloading if present)
 
-## Run From GitHub (Raw URL)
+## Run in Terminal From GitHub (Raw URL)
 
 Recommended (`curl`):
 
