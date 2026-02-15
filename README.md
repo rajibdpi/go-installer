@@ -26,6 +26,20 @@ Running the script will:
 - `curl` (required; used to detect the latest version, and as a download fallback)
 - Optional: `wget` (used for downloading if present)
 
+## Run From GitHub (Raw URL)
+
+Recommended (`curl`):
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.sh)"
+```
+
+Using `wget`:
+
+```bash
+bash -c "$(wget -qO- https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.sh)"
+```
+
 ## Install (Step-by-Step)
 
 1. Make the script executable:
