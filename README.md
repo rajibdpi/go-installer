@@ -1,10 +1,13 @@
 # Go Installer
 
-`install-go.sh` installs the latest stable Go (Golang) toolchain for your current OS/CPU by downloading the official tarball from `go.dev`, extracting it to `/usr/local/go`, and ensuring `/usr/local/go/bin` is on your `PATH`.
+This repo provides:
+
+- `install-go.sh` (Linux/macOS): installs Go to `/usr/local/go` and ensures `/usr/local/go/bin` is on your `PATH`
+- `install-go.ps1` (Windows): installs Go to `%LocalAppData%\Programs\Go` and adds `...\Go\bin` to your **User** `PATH`
 
 ## What It Does
 
-Running the script will:
+Linux/macOS (`install-go.sh`) will:
 
 - Detect the latest Go version from `https://go.dev/VERSION?m=text`
 - Detect your OS (`uname -s`) and architecture (`uname -m`)
@@ -14,33 +17,50 @@ Running the script will:
 - Append `export PATH=/usr/local/go/bin:$PATH` to one profile file (see below) if it is not already present
 - Run `go version` to verify the install
 
+Windows (`install-go.ps1`) will:
+
+- Detect the latest Go version from `https://go.dev/VERSION?m=text`
+- Detect your CPU architecture (`AMD64`/`ARM64`)
+- Download the matching zip from `https://go.dev/dl/`
+- Install Go into `%LocalAppData%\Programs\Go` (by default)
+- Add `...\Go\bin` to your **User** `PATH` (no duplicates)
+- Run `go version` to verify the install
+
 ## Supported Platforms
 
-- OS: Linux and macOS (the script uses `uname -s` lowercased, e.g. `linux`, `darwin`)
-- Arch: `amd64` (`x86_64`) and `arm64` (`aarch64`)
+- Linux/macOS: `install-go.sh` (`amd64`/`arm64`)
+- Windows: `install-go.ps1` (`AMD64`/`ARM64`)
 
 ## Prerequisites
 
-- `bash`
-- `sudo` access (installs into `/usr/local`)
-- `curl` (required; used to detect the latest version, and as a download fallback)
-- Optional: `wget` (used for downloading if present)
+- Linux/macOS (`install-go.sh`): `bash`, `sudo`, `curl` (optional: `wget`)
+- Windows (`install-go.ps1`): PowerShell 5.1+ and internet access to `go.dev`
 
-## Run in Terminal From GitHub (Raw URL)
+## Run From GitHub (Raw URL)
 
-Recommended (`curl`):
+Replace `<USER>/<REPO>` with your GitHub repo (example: `rajibdpi/go-installer`).
+
+Linux/macOS (recommended, `curl`):
 
 ```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/<USER>/<REPO>/main/install-go.sh)"
 ```
 
-Using `wget`:
+Linux/macOS (`wget`):
 
 ```bash
-bash -c "$(wget -qO- https://raw.githubusercontent.com/rajibdpi/go-installer/main/install-go.sh)"
+bash -c "$(wget -qO- https://raw.githubusercontent.com/<USER>/<REPO>/main/install-go.sh)"
+```
+
+Windows (PowerShell):
+
+```powershell
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/<USER>/<REPO>/main/install-go.ps1 | iex"
 ```
 
 ## Install (Step-by-Step)
+
+Linux/macOS:
 
 1. Make the script executable:
 
@@ -80,6 +100,18 @@ If you are unsure which file was changed, search for the line:
 grep -nH "/usr/local/go/bin" ~/.bashrc ~/.zshrc ~/.profile 2>/dev/null || true
 ```
 
+Windows:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install-go.ps1
+```
+
+If the install directory already exists and you want to replace it:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install-go.ps1 -Force
+```
+
 ## Verify
 
 After installation:
@@ -92,9 +124,11 @@ go env GOROOT
 
 Expected `GOROOT` is `/usr/local/go`.
 
+On Windows, expected `GOROOT` is the install directory (default: `%LocalAppData%\Programs\Go`).
+
 ## Update Go
 
-Re-run the script:
+Linux/macOS: re-run the script:
 
 ```bash
 ./install-go.sh
@@ -102,7 +136,15 @@ Re-run the script:
 
 It will download the latest stable version and replace `/usr/local/go`.
 
+Windows: re-run with `-Force` to replace the existing install directory:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install-go.ps1 -Force
+```
+
 ## Uninstall
+
+Linux/macOS:
 
 1. Remove the Go install directory:
 
@@ -118,6 +160,16 @@ export PATH=/usr/local/go/bin:$PATH
 
 Then start a new terminal (or `source` the profile file).
 
+Windows:
+
+1. Remove the install directory (default):
+
+```powershell
+Remove-Item -Recurse -Force "$env:LOCALAPPDATA\\Programs\\Go"
+```
+
+2. Remove the Go `bin` entry from your **User** PATH (via Windows settings), then open a new terminal.
+
 ## Troubleshooting
 
 - `curl: command not found`:
@@ -131,6 +183,8 @@ Then start a new terminal (or `source` the profile file).
   - Open a new terminal.
   - Confirm your profile contains `export PATH=/usr/local/go/bin:$PATH`.
   - Confirm the profile file you are using is actually loaded by your shell.
+- PowerShell execution policy errors on Windows:
+  - Use the commands shown above with `-ExecutionPolicy Bypass`.
 - Existing Go installs:
   - The script replaces `/usr/local/go` only. If you installed Go via Homebrew/apt/etc, you may still have another `go` earlier on your `PATH`.
   - Check resolution with: `command -v go` and `which -a go` (if available).
@@ -138,12 +192,13 @@ Then start a new terminal (or `source` the profile file).
 ## Security Notes
 
 - This script downloads and installs binaries from `go.dev` but does not verify checksums/signatures.
-- Read `install-go.sh` before running if you have stricter supply-chain requirements.
+- Read `install-go.sh` / `install-go.ps1` before running if you have stricter supply-chain requirements.
 
 ## Files
 
 - `README.md`: this file
 - `install-go.sh`: installation script
+- `install-go.ps1`: Windows installation script
 
 ## License
 
